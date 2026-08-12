@@ -4,6 +4,7 @@ import sys
 import platform
 import psutil
 import winreg
+import GPUtil
 
 print("==" * 25)
 print("      SYSTEM INFORMATION REPORTER       ")
@@ -88,4 +89,46 @@ print(f"Current Speed: {cpu_speed} GHz")
 print(f"CPU Usage: {cpu_percent} %")
 
 
+#GPU
+print()
+
+print("--" * 25)
+print("     GPU INFORMATIONS    ")
+print("--" * 25)
+
+gpus = GPUtil.getGPUs()
+
+#CASE 1
+if len(gpus) == 0:
+    print("No GPU found.")
+elif len(gpus) == 1:
+    gpu = gpus[0]   
+else:
+    print(f"{len(gpus)} GPU's found")
+    for i, gpu in enumerate(gpus):
+        print(f"{i+1}. {gpu[i]}")
+    while True:
+        try:
+            choice = int(input("\n Which GPU do you want to know about?"))
+            if 1<= choice <= gpus[i]:
+                gpu = gpus[choice - 1]
+                break
+            else:
+                print("Choose a valid GPU number")
+        except ValueError:
+            print("Enter a valid Value")
+
+print(f"Selected GPU: {gpu.name}")
+
+gpu_total_memory = round(gpu.memoryTotal/1024, 2)
+gpu_used_memory =  round(gpu.memoryUsed/1024, 2)
+gpu_free_memory = round(gpu.memoryFree/1024, 2)
+gpu_usage = round(gpu.load * 100, 2)
+gpu_temperature = gpu.temperature
+
+print(f"Total Memory: {gpu_total_memory}")
+print(f"Used Memory: {gpu_used_memory}")
+print(f"Free Memory: {gpu_free_memory} ")
+print(f"GPU Usage: {gpu_usage} %")
+print(f"GPU Temperature: {gpu_temperature} %")
 
